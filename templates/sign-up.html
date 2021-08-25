@@ -1,0 +1,44 @@
+{% include "header.html" %}
+
+{% import "bootstrap/wtf.html" as wtf %}
+
+<body>
+
+<div id="page-content-wrapper">
+{% include 'topnav.html' %}
+
+
+    <header class="masthead" style="background-image: url('')">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="page-heading">
+            <h1>
+            <span class="subheading">Start tracking your to-do's for the day!</span></h1>
+              <br>
+
+            <div class="container">
+              {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+
+      </div>
+    </div>
+  </div>
+
+
+
+
+</div>
+
+</body>
