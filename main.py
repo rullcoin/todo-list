@@ -1,3 +1,5 @@
+import datetime
+
 from flask import Flask, render_template, redirect, url_for, flash, abort
 from flask_bootstrap import Bootstrap
 from flask_ckeditor import CKEditor
@@ -7,7 +9,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
-from forms import LoginForm, RegisterForm, CreatePostForm, CommentForm
+from forms import LoginForm, RegisterForm, CreatePostForm, TaskForm
 from flask_gravatar import Gravatar
 import os
 
@@ -45,7 +47,8 @@ class Todo(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     author = relationship("User", back_populates="todo")
     date = db.Column(db.String(250), nullable=False)
-    text = db.Column(db.Text, nullable=False)
+    task = description = db.Column(db.String, nullable=False)
+    description = db.Column(db.String, nullable=False)
 
 #db.create_all()
 
@@ -58,7 +61,8 @@ def home():
 
 @app.route('/profile')
 def profile():
-    return render_template('profile.html')
+    tasks = Todo.query.all()
+    return render_template('profile.html', tasks=tasks, current_user=current_user)
 
 @app.route('/Login', methods= ['GET', 'POST'])
 def login():
@@ -82,9 +86,23 @@ def login():
             return redirect(url_for('home'))
     return render_template('login.html', form=form, toggle= hide_toggle, login=log, current_user=current_user)
 
+
 @app.route('/to-do', methods= ['GET', 'POST'])
+@login_required
 def todo_list():
-    return render_template('todo.html')
+    dater = date.today().strftime("%B %d, %Y")
+    form = TaskForm()
+    if form.validate_on_submit():
+        new_task = Todo(
+            author= current_user,
+            date= dater,
+            task= form.task.data,
+            description= form.description.data
+        )
+        db.session.add(new_task)
+        db.session.commit()
+        return redirect(url_for("profile"))
+    return render_template('todo.html', date=dater, form=form)
 
 @app.route('/sign_up', methods = ['GET', 'POST'])
 def sign_up():

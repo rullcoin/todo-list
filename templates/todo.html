@@ -1,12 +1,17 @@
 {% include "header.html" %}
 {% include "sidebar.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
 <body>
 
 <div id="page-content-wrapper">
 {% include 'topnav.html' %}
 
-<p> todo</p>
+<p>Today: {{date}}</p>
+
+        {{ ckeditor.load() }}
+        {{ ckeditor.config(name='description') }}
+        {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
 </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
