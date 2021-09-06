@@ -62,7 +62,8 @@ def home():
 @app.route('/profile')
 def profile():
     tasks = Todo.query.all()
-    return render_template('profile.html', tasks=tasks, current_user=current_user)
+    dater = date.today().strftime("%B %d, %Y")
+    return render_template('profile.html', date=dater, tasks=tasks, current_user=current_user)
 
 @app.route('/Login', methods= ['GET', 'POST'])
 def login():
@@ -103,6 +104,14 @@ def todo_list():
         db.session.commit()
         return redirect(url_for("profile"))
     return render_template('todo.html', date=dater, form=form)
+
+@app.route('/profile/<int:task_id>', methods= ['GET', 'POST'])
+def delete_post(task_id):
+    task_delete = Todo.query.get(task_id)
+    db.session.delete(task_delete)
+    db.session.commit()
+    return redirect(url_for('profile'))
+
 
 @app.route('/sign_up', methods = ['GET', 'POST'])
 def sign_up():
